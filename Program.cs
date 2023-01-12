@@ -36,6 +36,51 @@ namespace mpg_cli
 
             // Greet user
             Console.WriteLine($"Hello, {profile.DisplayName}!");
+
+            // Generate playlist for user
+
+            // First, ask what month/year they wish to generate from
+            Console.WriteLine("Let's generate a playlist based on songs you've liked from a specified month and year.");
+
+            bool inputGood = false;
+            int year = 0, month = 0;
+
+            while (!inputGood)
+            {
+                Console.Write("Enter a year: ");
+                string yearInput = Console.ReadLine();
+
+                Console.Write("Enter a month: ");
+                string monthInput = Console.ReadLine();
+
+                // Validate
+                if ((int.TryParse(yearInput, out var y))
+                    && (int.TryParse(monthInput, out var m)))
+                {
+                    if ((y >= 2008 && y <= DateTime.Now.Year)
+                        && (m >= 1 && m <= 12))
+                    {
+                        year = y;
+                        month = m;
+
+                        inputGood = true;
+                    }
+                }
+
+                if (!inputGood)
+                {
+                    Console.WriteLine();
+                    Console.WriteLine("Error: please enter a valid year and month.");
+                    Console.WriteLine("For example, '2022', and '5' for January 2022.");
+                    Console.WriteLine();
+                }
+            }
+
+            Console.WriteLine($"You've selected {month}/{year}!");
+
+
+            // Generate the playlist
+            // @todo make a playlist service or something
         }
     }
 }
