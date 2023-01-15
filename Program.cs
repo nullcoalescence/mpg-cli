@@ -31,7 +31,13 @@ namespace mpg_cli
                 spotifyConfig.Port,
                 Constants.SpotifyScopes);
 
-            var spotifyClient = await authService.Authorize();
+            bool reAuth = false;
+            if (args.Length > 0 && args[0].ToLower().Trim().Contains("regenauth"))
+            {
+                reAuth = true;
+            }
+
+            var spotifyClient = await authService.Authorize(forceReAuth: reAuth);
             var profile = await spotifyClient.UserProfile.Current();
 
             // Greet user
@@ -47,11 +53,11 @@ namespace mpg_cli
 
             while (!inputGood)
             {
-                Console.Write("Enter a year: ");
-                string yearInput = Console.ReadLine();
-
-                Console.Write("Enter a month: ");
+                Console.Write("Enter a month (Format: 05): ");
                 string monthInput = Console.ReadLine();
+
+                Console.Write("Enter a year (Format: 2022): ");
+                string yearInput = Console.ReadLine();
 
                 // Validate
                 if ((int.TryParse(yearInput, out var y))
@@ -78,9 +84,12 @@ namespace mpg_cli
 
             Console.WriteLine($"You've selected {month}/{year}!");
 
+            // Prompt for playlist name
+            Console.Write("Enter playlist name: ");
+            var playlistName = Console.ReadLine();
 
-            // Generate the playlist
-            // @todo make a playlist service or something
+            var playlistService = new PlaylistService(spotifyClient);
+            await playlistService.CreatePlaylistOfLikedSongsInRange(playlistName, month, year);
         }
     }
 }

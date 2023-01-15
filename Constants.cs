@@ -21,6 +21,13 @@ namespace mpg_cli
         // Scopes
         // When updating these, need to call SpotifyPkceAuthService.Authorization() with
         // param forceReAuth: true
-        public static List<string> SpotifyScopes = new List<string> { Scopes.UserReadEmail };
+        public static List<string> SpotifyScopes = new List<string> { Scopes.UserReadEmail,
+            Scopes.UserReadPrivate,
+            Scopes.UserLibraryModify,
+            Scopes.PlaylistModifyPrivate,
+            Scopes.PlaylistModifyPublic,
+            Scopes.PlaylistReadPrivate,
+            Scopes.UserLibraryRead
+        };
     }
 }
