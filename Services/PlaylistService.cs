@@ -17,10 +17,17 @@ namespace mpg_cli.Services
             var songsLikedInRange = await GetSongsInMonth(month, year);
             var uris = songsLikedInRange.Select(s => s.Track.Uri).ToList();
 
+            // Spotify API allows for 100 songs to be added at once
+            var paginatedUris = PaginateList(uris);
+
             var playlist = await CreatePlaylist(playlistName);
 
-            await this.spotify.Playlists.AddItems(playlist.Id,
-                new PlaylistAddItemsRequest(uris));
+            foreach (var list in paginatedUris)
+            {
+                await this.spotify.Playlists.AddItems(playlist.Id,
+                    new PlaylistAddItemsRequest(list));
+            }
+
 
             Console.WriteLine("Created playlist!");
         }
@@ -59,6 +66,36 @@ namespace mpg_cli.Services
             Console.WriteLine($"Done, found {tracksInRange.Count} liked in {month}/{year}.");
 
             return tracksInRange;
+        }
+
+        // Chunk up List<SavedTracks> so they can be added to a playlist
+        // Spotify's playlist endpoint only allows 100 songs added at once
+        private List<List<string>> PaginateList(List<string> uriList)
+        {
+            var pageSize = 100;
+            var outerList = new List<List<string>>();
+
+            if (uriList.Count < pageSize)
+            {
+                outerList.Add(uriList);
+                return outerList;
+            }
+
+            var div = Math.DivRem(uriList.Count, 100);
+
+            // Paginate by 100
+            for (int i = 0; i <= div.Quotient; i++)
+            {
+                outerList.Add(uriList
+                    .Skip(i * pageSize)
+                    .Take(pageSize)
+                    .ToList());
+            }
+
+            // Any remaining after the last 100?
+            outerList.Add(uriList.Skip(uriList.Count - div.Remainder).ToList());
+
+            return outerList;
         }
 
 
