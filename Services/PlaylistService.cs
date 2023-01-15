@@ -22,13 +22,13 @@ namespace mpg_cli.Services
             await this.spotify.Playlists.AddItems(playlist.Id,
                 new PlaylistAddItemsRequest(uris));
 
-            Console.WriteLine("Created playlist... (maybe?)");
+            Console.WriteLine("Created playlist!");
         }
 
         // Create playlist
         private async Task<FullPlaylist> CreatePlaylist(string name)
         {
-            var user = this.spotify.UserProfile.Current();
+            var user = await this.spotify.UserProfile.Current();
             var id = user.Id;
 
             var playlist = await this.spotify.Playlists.Create(
