@@ -13,7 +13,7 @@ namespace mpg_cli
             Console.WriteLine(Constants.AppVersion);
 
             // Authorization
-            Console.WriteLine("Authoriation your account with Spotify.");
+            Console.WriteLine("Authorizing your account with Spotify.");
             // @todo: allow this to be passed in as command line arg
             Console.WriteLine($"Using SpotifyConfig: '{Constants.SpotifyConfigPath}'.");
 
