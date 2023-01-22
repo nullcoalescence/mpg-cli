@@ -32,6 +32,8 @@ namespace mpg_cli.Services
             Console.WriteLine("Created playlist!");
         }
 
+
+
         // Create playlist
         private async Task<FullPlaylist> CreatePlaylist(string name)
         {
